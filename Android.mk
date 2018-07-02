@@ -391,15 +391,16 @@ else
     LOCAL_LDFLAGS += -Wl,-dynamic-linker,/sbin/linker64
 endif
 ifneq ($(TW_USE_TOOLBOX), true)
-    LOCAL_ADDITIONAL_DEPENDENCIES += busybox_symlinks
-    ifeq ($(shell test $(PLATFORM_SDK_VERSION) -lt 24; echo $$?),0)
-        LOCAL_POST_INSTALL_CMD := \
-            $(hide) mkdir -p $(TARGET_RECOVERY_ROOT_OUT)/sbin && \
-            ln -sf /sbin/busybox $(TARGET_RECOVERY_ROOT_OUT)/sbin/sh
-    endif
+    LOCAL_ADDITIONAL_DEPENDENCIES += toybox_static
+    #ifeq ($(shell test $(PLATFORM_SDK_VERSION) -lt 24; echo $$?),0)
+    #    LOCAL_POST_INSTALL_CMD := \
+    #        $(hide) mkdir -p $(TARGET_RECOVERY_ROOT_OUT)/sbin && \
+    #        ln -sf /sbin/busybox $(TARGET_RECOVERY_ROOT_OUT)/sbin/sh
+    #endif
 else
+		LOCAL_ADDITIONAL_DEPENDENCIES += toybox_static unzip
     ifneq ($(wildcard external/toybox/Android.mk),)
-        LOCAL_ADDITIONAL_DEPENDENCIES += toybox_symlinks
+        LOCAL_ADDITIONAL_DEPENDENCIES += toybox_static
     endif
     ifneq ($(wildcard external/zip/Android.mk),)
         LOCAL_ADDITIONAL_DEPENDENCIES += zip
@@ -780,7 +781,6 @@ include $(commands_recovery_local_path)/injecttwrp/Android.mk \
     $(commands_recovery_local_path)/minzip/Android.mk \
     $(commands_recovery_local_path)/dosfstools/Android.mk \
     $(commands_recovery_local_path)/etc/Android.mk \
-    $(commands_recovery_local_path)/toybox/Android.mk \
     $(commands_recovery_local_path)/simg2img/Android.mk \
     $(commands_recovery_local_path)/adbbu/Android.mk \
     $(commands_recovery_local_path)/libpixelflinger/Android.mk \
